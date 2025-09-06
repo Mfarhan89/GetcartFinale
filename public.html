@@ -2,17 +2,28 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Affiliate Products</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
+  <!-- Navigation -->
   <header class="navbar">
-    <img src="logo.png" alt="Site Logo" class="logo">
-    <h1>Affiliate Products</h1>
+    <div class="nav-container">
+      <div class="brand">
+        <img src="logo.png" alt="Site Logo" class="logo">
+        <h1>Affiliate Products</h1>
+      </div>
+      <nav class="nav-links">
+        <a href="index.html" class="nav-link">Home</a>
+      </nav>
+    </div>
   </header>
 
-  <div class="container">
-    <div class="filter">
+  <!-- Page Content -->
+  <main class="container">
+    <!-- Filter Section -->
+    <section class="filter">
       <label for="categoryFilter"><strong>Filter by Category:</strong></label>
       <select id="categoryFilter" onchange="filterProducts()">
         <option value="all">All</option>
@@ -22,10 +33,18 @@
         <option value="accessories">Accessories</option>
         <option value="cloth">Cloth</option>
       </select>
-    </div>
-    <div id="productList" class="grid"></div>
-  </div>
+    </section>
 
+    <!-- Product Grid -->
+    <section id="productList" class="grid"></section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <p>&copy; 2025 Affiliate Products. All rights reserved.</p>
+  </footer>
+
+  <!-- Scripts -->
   <script src="app.js"></script>
   <script>loadPublicProducts();</script>
 </body>
