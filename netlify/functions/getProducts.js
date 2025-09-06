@@ -1,14 +1,16 @@
-import { promises as fs } from "fs";
+import { connectLambda, getStore } from "@netlify/blobs";
 
-export async function handler() {
+export const handler = async (event) => {
+  connectLambda(event);
+
   try {
-    const data = await fs.readFile("products.json", "utf-8");
+    const store = getStore("products"); // site-level store named "products"
+    const products = await store.get("products.json", { type: "json" }) || [];
     return {
       statusCode: 200,
-      body: data,
-      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(products),
     };
   } catch (err) {
-    return { statusCode: 500, body: "Error reading products" };
+    return { statusCode: 500, body: "Error: " + err.message };
   }
-}
+};
