@@ -2,7 +2,6 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Affiliate Products</title>
   <link rel="stylesheet" href="style.css">
 </head>
@@ -10,14 +9,16 @@
   <!-- Navbar -->
   <header class="navbar">
     <div class="nav-container">
-      <img src="logo.png" alt="Site Logo" class="logo">
-      <h1>Affiliate Products</h1>
+      <div class="brand">
+        <img src="logo.png" alt="Site Logo" class="logo">
+        <h1>Affiliate Products</h1>
+      </div>
     </div>
   </header>
 
-  <main class="container">
-    <!-- Filter Section -->
-    <section class="filter">
+  <div class="container">
+    <!-- Filter -->
+    <section class="filter-section">
       <label for="categoryFilter"><strong>Filter by Category:</strong></label>
       <select id="categoryFilter" onchange="filterProducts()">
         <option value="all">All</option>
@@ -31,24 +32,22 @@
 
     <!-- Interactive Video Section -->
     <section class="video-section">
+      <h2>Discover Our Affiliate Marketplace</h2>
       <div class="video-container">
-        <!-- Replace VIDEO_ID with your actual YouTube video ID -->
-        <iframe src="https://www.youtube.com/embed/VIDEO_ID"
-                title="Product Video"
-                frameborder="0"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowfullscreen></iframe>
+        <iframe width="100%" height="400" 
+          src="https://www.youtube.com/embed/dQw4w9WgXcQ" 
+          title="Affiliate Introduction Video" 
+          frameborder="0" allowfullscreen>
+        </iframe>
       </div>
     </section>
 
-    <!-- Product Grid -->
-    <section id="productList" class="grid"></section>
-  </main>
-
-  <!-- Footer -->
-  <footer class="footer">
-    <p>&copy; 2025 Affiliate Products. All Rights Reserved.</p>
-  </footer>
+    <!-- Products Grid -->
+    <section class="product-section">
+      <h2>Available Products</h2>
+      <div id="productList" class="grid"></div>
+    </section>
+  </div>
 
   <script src="app.js"></script>
   <script>loadPublicProducts();</script>
