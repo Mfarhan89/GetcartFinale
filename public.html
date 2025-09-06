@@ -1,179 +1,32 @@
-/* Reset & Base */
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Affiliate Products</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="navbar">
+    <img src="logo.png" alt="Site Logo" class="logo">
+    <h1>Affiliate Products</h1>
+  </header>
 
-body {
-  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-  background: #f8f9fc;
-  color: #333;
-  line-height: 1.6;
-}
+  <div class="container">
+    <div class="filter">
+      <label for="categoryFilter"><strong>Filter by Category:</strong></label>
+      <select id="categoryFilter" onchange="filterProducts()">
+        <option value="all">All</option>
+        <option value="technology">Technology</option>
+        <option value="health">Health</option>
+        <option value="sport">Sport</option>
+        <option value="accessories">Accessories</option>
+        <option value="cloth">Cloth</option>
+      </select>
+    </div>
+    <div id="productList" class="grid"></div>
+  </div>
 
-/* Navbar */
-.navbar {
-  background: #1e293b;
-  color: #fff;
-  padding: 0.8rem 2rem;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-  position: sticky;
-  top: 0;
-  z-index: 1000;
-}
-
-.nav-container {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  max-width: 1200px;
-  margin: 0 auto;
-}
-
-.brand {
-  display: flex;
-  align-items: center;
-  gap: 0.8rem;
-}
-
-.logo {
-  height: 45px;
-  width: 45px;
-  object-fit: contain;
-  border-radius: 8px;
-  background: #fff;
-  padding: 5px;
-}
-
-.nav-links {
-  display: flex;
-  gap: 1.2rem;
-}
-
-.nav-link {
-  color: #fff;
-  text-decoration: none;
-  font-weight: 500;
-  transition: color 0.3s;
-}
-
-.nav-link:hover {
-  color: #38bdf8;
-}
-
-/* Container */
-.container {
-  max-width: 1200px;
-  margin: 2rem auto;
-  padding: 0 1.5rem;
-}
-
-/* Filter */
-.filter {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  margin-bottom: 1.5rem;
-}
-
-.filter select {
-  padding: 0.6rem 1rem;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  background: #fff;
-  font-size: 1rem;
-  transition: border 0.3s;
-}
-
-.filter select:focus {
-  border-color: #2563eb;
-  outline: none;
-}
-
-/* Product Grid */
-.grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-  gap: 1.5rem;
-}
-
-/* Product Card */
-.product-card {
-  background: #fff;
-  border-radius: 12px;
-  overflow: hidden;
-  box-shadow: 0 3px 8px rgba(0,0,0,0.08);
-  transition: transform 0.3s, box-shadow 0.3s;
-  display: flex;
-  flex-direction: column;
-}
-
-.product-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 6px 16px rgba(0,0,0,0.15);
-}
-
-.product-card img {
-  width: 100%;
-  height: 180px;
-  object-fit: cover;
-}
-
-.product-info {
-  padding: 1rem;
-  flex-grow: 1;
-}
-
-.product-info h3 {
-  font-size: 1.1rem;
-  margin-bottom: 0.5rem;
-  color: #1e293b;
-}
-
-.product-info p {
-  font-size: 0.9rem;
-  margin-bottom: 0.8rem;
-  color: #555;
-}
-
-.product-info a {
-  display: inline-block;
-  text-decoration: none;
-  background: #2563eb;
-  color: #fff;
-  padding: 0.5rem 1rem;
-  border-radius: 8px;
-  font-weight: 500;
-  transition: background 0.3s;
-}
-
-.product-info a:hover {
-  background: #1d4ed8;
-}
-
-/* Footer */
-.footer {
-  background: #1e293b;
-  color: #cbd5e1;
-  text-align: center;
-  padding: 1rem;
-  margin-top: 2rem;
-  font-size: 0.9rem;
-}
-
-/* Responsive */
-@media (max-width: 768px) {
-  .brand h1 {
-    font-size: 1.2rem;
-  }
-
-  .filter {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-
-  .nav-links {
-    gap: 0.8rem;
-  }
-}
+  <script src="app.js"></script>
+  <script>loadPublicProducts();</script>
+</body>
+</html>
