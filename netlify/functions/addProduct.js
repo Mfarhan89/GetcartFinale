@@ -1,26 +1,30 @@
-import { promises as fs } from "fs";
+const fs = require("fs");
+const path = require("path");
 
-export async function handler(event) {
+exports.handler = async (event) => {
   if (event.httpMethod !== "POST") {
     return { statusCode: 405, body: "Method Not Allowed" };
   }
 
+  const product = JSON.parse(event.body);
+
   try {
-    const newProduct = JSON.parse(event.body);
+    const filePath = path.join(process.cwd(), "products.json");
 
-    const file = await fs.readFile("products.json", "utf-8");
-    const products = JSON.parse(file);
+    let products = [];
+    if (fs.existsSync(filePath)) {
+      products = JSON.parse(fs.readFileSync(filePath));
+    }
 
-    products.push({
-      ...newProduct,
-      id: Date.now(),
-      createdAt: new Date().toISOString(),
-    });
+    products.push(product);
 
-    await fs.writeFile("products.json", JSON.stringify(products, null, 2));
+    fs.writeFileSync(filePath, JSON.stringify(products, null, 2));
 
-    return { statusCode: 200, body: JSON.stringify({ success: true }) };
+    return {
+      statusCode: 200,
+      body: JSON.stringify({ message: "Product added successfully!" }),
+    };
   } catch (err) {
-    return { statusCode: 500, body: "Error saving product" };
+    return { statusCode: 500, body: "Error saving product: " + err.message };
   }
-}
+};
