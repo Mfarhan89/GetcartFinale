@@ -1,4 +1,9 @@
-// Add new product
+async function loadProducts(isOwner = false) {
+  const res = await fetch("/.netlify/functions/getProducts");
+  const products = await res.json();
+  // render into #productList (same structure you already have)
+}
+
 async function uploadProduct() {
   const product = {
     name: document.getElementById("pname").value,
@@ -15,47 +20,18 @@ async function uploadProduct() {
   });
 
   if (res.ok) {
-    alert("✅ Product uploaded successfully!");
-    loadProducts(true); // refresh dashboard list
+    await loadProducts(true);
   } else {
-    alert("❌ Upload failed!");
+    console.error(await res.text());
+    alert("Upload failed");
   }
 }
 
-// Load products for dashboard or public page
-async function loadProducts(isOwner = false) {
-  const res = await fetch("/products.json");
-  const products = await res.json();
-
-  const list = document.getElementById("productList");
-  list.innerHTML = "";
-
-  products.forEach((p, index) => {
-    const div = document.createElement("div");
-    div.className = "product";
-    div.innerHTML = `
-      <img src="${p.img}" alt="${p.name}">
-      <h4>${p.name}</h4>
-      <p>${p.desc}</p>
-      <a href="${p.link}" target="_blank">Buy</a>
-      ${isOwner ? `<button class="btn" onclick="removeProduct(${index})">Remove</button>` : ""}
-    `;
-    list.appendChild(div);
-  });
-}
-
-// Remove a product
 async function removeProduct(index) {
-  const res = await fetch("/.netlify/functions/removeProduct", {
+  await fetch("/.netlify/functions/removeProduct", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ index })
   });
-
-  if (res.ok) {
-    alert("🗑️ Product removed!");
-    loadProducts(true);
-  } else {
-    alert("❌ Remove failed!");
-  }
+  await loadProducts(true);
 }
