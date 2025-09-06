@@ -7,29 +7,40 @@
   <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
 </head>
 <body>
+  <!-- Navbar -->
   <header class="navbar">
-    <img src="logo.png" alt="Site Logo" class="logo">
-    <h1>Affiliate Dashboard</h1>
-    <button class="btn" onclick="netlifyIdentity.logout()">Logout</button>
+    <div class="nav-container">
+      <div class="brand">
+        <img src="logo.png" alt="Site Logo" class="logo">
+        <h1>Affiliate Dashboard</h1>
+      </div>
+      <button class="btn" onclick="netlifyIdentity.logout()">Logout</button>
+    </div>
   </header>
 
   <div class="container">
-    <h2>Add Product</h2>
-    <input type="text" id="pname" placeholder="Product Name">
-    <input type="text" id="pdesc" placeholder="Description">
-    <input type="text" id="plink" placeholder="Affiliate Link">
-    <input type="text" id="pimg" placeholder="Image URL">
-    <select id="pcategory">
-      <option value="technology">Technology</option>
-      <option value="health">Health</option>
-      <option value="sport">Sport</option>
-      <option value="accessories">Accessories</option>
-      <option value="cloth">Cloth</option>
-    </select>
-    <button class="btn" onclick="uploadProduct()">Upload</button>
+    <!-- Add Product Form -->
+    <section class="form-section">
+      <h2>Add Product</h2>
+      <input type="text" id="pname" placeholder="Product Name">
+      <input type="text" id="pdesc" placeholder="Description">
+      <input type="text" id="plink" placeholder="Affiliate Link">
+      <input type="text" id="pimg" placeholder="Image URL">
+      <select id="pcategory">
+        <option value="technology">Technology</option>
+        <option value="health">Health</option>
+        <option value="sport">Sport</option>
+        <option value="accessories">Accessories</option>
+        <option value="cloth">Cloth</option>
+      </select>
+      <button class="btn primary" onclick="uploadProduct()">Upload</button>
+    </section>
 
-    <h2>My Products</h2>
-    <div id="productList" class="grid"></div>
+    <!-- My Products -->
+    <section class="product-section">
+      <h2>My Products</h2>
+      <div id="productList" class="grid"></div>
+    </section>
   </div>
 
   <script src="app.js"></script>
