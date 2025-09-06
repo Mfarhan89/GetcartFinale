@@ -7,17 +7,14 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <!-- Header / Navbar -->
+  <!-- Navbar -->
   <header class="navbar">
     <div class="nav-container">
-      <div class="brand">
-        <img src="logo.png" alt="Site Logo" class="logo">
-        <h1>Affiliate Products</h1>
-      </div>
+      <img src="logo.png" alt="Site Logo" class="logo">
+      <h1>Affiliate Products</h1>
     </div>
   </header>
 
-  <!-- Page Content -->
   <main class="container">
     <!-- Filter Section -->
     <section class="filter">
@@ -32,16 +29,27 @@
       </select>
     </section>
 
+    <!-- Interactive Video Section -->
+    <section class="video-section">
+      <div class="video-container">
+        <!-- Replace VIDEO_ID with your actual YouTube video ID -->
+        <iframe src="https://www.youtube.com/embed/VIDEO_ID"
+                title="Product Video"
+                frameborder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowfullscreen></iframe>
+      </div>
+    </section>
+
     <!-- Product Grid -->
     <section id="productList" class="grid"></section>
   </main>
 
   <!-- Footer -->
   <footer class="footer">
-    <p>&copy; 2025 Affiliate Products. All rights reserved.</p>
+    <p>&copy; 2025 Affiliate Products. All Rights Reserved.</p>
   </footer>
 
-  <!-- Scripts -->
   <script src="app.js"></script>
   <script>loadPublicProducts();</script>
 </body>
