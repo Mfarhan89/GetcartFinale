@@ -1,82 +1,61 @@
-let cachedProducts = [];
-
+// Add new product
 async function uploadProduct() {
   const product = {
     name: document.getElementById("pname").value,
     desc: document.getElementById("pdesc").value,
     link: document.getElementById("plink").value,
-    image: document.getElementById("pimg").value,
-    category: document.getElementById("pcategory").value,
+    img: document.getElementById("pimg").value,
+    category: document.getElementById("pcategory").value
   };
 
-  const res = await fetch("/api/addProduct", {
+  const res = await fetch("/.netlify/functions/addProduct", {
     method: "POST",
-    body: JSON.stringify(product),
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(product)
   });
 
   if (res.ok) {
-    alert("Product uploaded!");
-    loadProducts(true);
+    alert("✅ Product uploaded successfully!");
+    loadProducts(true); // refresh dashboard list
   } else {
-    alert("Failed to upload product");
+    alert("❌ Upload failed!");
   }
 }
 
-async function loadProducts(admin = false) {
-  const res = await fetch("/api/getProducts");
+// Load products for dashboard or public page
+async function loadProducts(isOwner = false) {
+  const res = await fetch("/products.json");
   const products = await res.json();
-  cachedProducts = products;
-  renderProducts(products, admin);
-}
 
-async function loadPublicProducts() {
-  const res = await fetch("/api/getProducts");
-  cachedProducts = await res.json();
-  renderProducts(cachedProducts);
-}
-
-function filterProducts() {
-  const category = document.getElementById("categoryFilter").value;
-  if (category === "all") {
-    renderProducts(cachedProducts);
-  } else {
-    renderProducts(cachedProducts.filter(p => p.category === category));
-  }
-}
-
-function renderProducts(products, admin = false) {
   const list = document.getElementById("productList");
   list.innerHTML = "";
 
-  products.forEach(p => {
-    list.innerHTML += `
-      <div class="product">
-        <img src="${p.image}" width="150">
-        <h4>${p.name}</h4>
-        <p>${p.desc}</p>
-        <p><strong>Category:</strong> ${p.category}</p>
-        <a href="${p.link}" target="_blank" class="btn">Buy Now</a>
-        <button class="btn" onclick="copyLink('${p.link}')">Share</button>
-        ${admin ? `<button class="btn" onclick="removeProduct(${p.id})">Remove</button>` : ""}
-      </div>`;
+  products.forEach((p, index) => {
+    const div = document.createElement("div");
+    div.className = "product";
+    div.innerHTML = `
+      <img src="${p.img}" alt="${p.name}">
+      <h4>${p.name}</h4>
+      <p>${p.desc}</p>
+      <a href="${p.link}" target="_blank">Buy</a>
+      ${isOwner ? `<button class="btn" onclick="removeProduct(${index})">Remove</button>` : ""}
+    `;
+    list.appendChild(div);
   });
 }
 
-function copyLink(link) {
-  navigator.clipboard.writeText(link);
-  alert("Link copied!");
-}
-
-async function removeProduct(id) {
-  const res = await fetch("/api/removeProduct", {
+// Remove a product
+async function removeProduct(index) {
+  const res = await fetch("/.netlify/functions/removeProduct", {
     method: "POST",
-    body: JSON.stringify({ id }),
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ index })
   });
 
   if (res.ok) {
-    alert("Product removed!");
+    alert("🗑️ Product removed!");
     loadProducts(true);
   } else {
-    alert("Failed to remove product");
+    alert("❌ Remove failed!");
   }
 }
