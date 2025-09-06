@@ -1,20 +1,16 @@
-import { connectLambda, getStore } from "@netlify/blobs";
+import { createClient } from "@netlify/blobs";
 
-export const handler = async (event) => {
-  connectLambda(event);
-
+export async function handler(event) {
   if (event.httpMethod !== "POST") {
-    return { statusCode: 405, body: "Method not allowed" };
+    return { statusCode: 405, body: "Method Not Allowed" };
   }
 
-  try {
-    const product = JSON.parse(event.body);
-    const store = getStore("products");
-    const existing = await store.get("products.json", { type: "json" }) || [];
-    existing.push(product);
-    await store.setJSON("products.json", existing);
-    return { statusCode: 200, body: JSON.stringify({ message: "Product added" }) };
-  } catch (err) {
-    return { statusCode: 500, body: "Error: " + err.message };
-  }
-};
+  const data = JSON.parse(event.body);
+  const client = createClient({ token: process.env.NETLIFY_BLOBS_TOKEN });
+  const store = client.store("products");
+
+  const id = Date.now().toString();
+  await store.setJSON(id, { id, ...data });
+
+  return { statusCode: 200, body: JSON.stringify({ message: "Product added!", id }) };
+}
