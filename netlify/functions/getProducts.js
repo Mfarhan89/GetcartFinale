@@ -1,16 +1,11 @@
-import { connectLambda, getStore } from "@netlify/blobs";
+import { createClient } from "@netlify/blobs";
 
-export const handler = async (event) => {
-  connectLambda(event);
+export async function handler() {
+  const client = createClient({ token: process.env.NETLIFY_BLOBS_TOKEN });
+  const store = client.store("products");
 
-  try {
-    const store = getStore("products"); // site-level store named "products"
-    const products = await store.get("products.json", { type: "json" }) || [];
-    return {
-      statusCode: 200,
-      body: JSON.stringify(products),
-    };
-  } catch (err) {
-    return { statusCode: 500, body: "Error: " + err.message };
-  }
-};
+  const list = await store.list();
+  const products = await Promise.all(list.blobs.map(b => store.getJSON(b.key)));
+
+  return { statusCode: 200, body: JSON.stringify(products) };
+}
