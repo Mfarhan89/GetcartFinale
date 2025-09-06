@@ -1,26 +1,12 @@
-import { connectLambda, getStore } from "@netlify/blobs";
+import { createClient } from "@netlify/blobs";
 
-export const handler = async (event) => {
-  connectLambda(event);
+export async function handler(event) {
+  const id = event.queryStringParameters.id;
+  if (!id) return { statusCode: 400, body: "Missing ID" };
 
-  if (event.httpMethod !== "POST") {
-    return { statusCode: 405, body: "Method not allowed" };
-  }
+  const client = createClient({ token: process.env.NETLIFY_BLOBS_TOKEN });
+  const store = client.store("products");
 
-  try {
-    const { index } = JSON.parse(event.body);
-    const store = getStore("products");
-    const products = await store.get("products.json", { type: "json" }) || [];
-
-    if (index < 0 || index >= products.length) {
-      return { statusCode: 400, body: "Invalid index" };
-    }
-
-    products.splice(index, 1);
-    await store.setJSON("products.json", products);
-
-    return { statusCode: 200, body: JSON.stringify({ message: "Product removed" }) };
-  } catch (err) {
-    return { statusCode: 500, body: "Error: " + err.message };
-  }
-};
+  await store.delete(id);
+  return { statusCode: 200, body: JSON.stringify({ message: "Deleted" }) };
+}
