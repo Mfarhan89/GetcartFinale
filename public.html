@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Welcoome to GetCart.my</title>
+  <title>GetCart.my – Shop Smart, Shop Fast</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -11,29 +11,59 @@
     <div class="nav-container">
       <div class="brand">
         <img src="picture/getcartLogo.png" alt="Site Logo" class="logo">
-        <h1>Welcome to GetCart.my</h1>
+        <h1>GetCart.my</h1>
       </div>
+      <nav>
+        <a href="public.html" class="nav-link active">Home</a>
+        <a href="#products" class="nav-link">Shop</a>
+        <a href="#about" class="nav-link">About</a>
+      </nav>
     </div>
   </header>
 
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="hero-content">
+      <h2>Welcome to <span class="highlight">GetCart.my</span></h2>
+      <p>Your one-stop platform for the best affiliate deals in Technology, Health, Sports, and more.</p>
+      <a href="#products" class="btn primary">Start Shopping</a>
+    </div>
+  </section>
+
   <div class="container">
-    <!-- Filter -->
+    <!-- Filter + Search Section -->
     <section class="filter-section">
-      <label for="categoryFilter"><strong>Filter by Category:</strong></label>
-      <select id="categoryFilter" onchange="filterProducts()">
-        <option value="all">All</option>
-        <option value="technology">Technology</option>
-        <option value="health">Health</option>
-        <option value="sport">Sport</option>
-        <option value="accessories">Accessories</option>
-        <option value="cloth">Cloth</option>
-      </select>
+      <div class="filter-controls">
+        <label for="categoryFilter"><strong>Category:</strong></label>
+        <select id="categoryFilter" onchange="applyPublicFilters()">
+          <option value="all">All</option>
+          <option value="technology">Technology</option>
+          <option value="health">Health</option>
+          <option value="sport">Sport</option>
+          <option value="accessories">Accessories</option>
+          <option value="cloth">Cloth</option>
+        </select>
+
+        <label for="sortBy"><strong>Sort By:</strong></label>
+        <select id="sortBy" onchange="applyPublicFilters()">
+          <option value="newest">Newest</option>
+          <option value="name">Name (A–Z)</option>
+          <option value="category">Category</option>
+        </select>
+
+        <input 
+          type="text" 
+          id="searchBox" 
+          placeholder="🔍 Search products..." 
+          onkeyup="applyPublicFilters()"
+        >
+      </div>
     </section>
 
     <!-- Interactive Video Section -->
-    <section class="video-section">
+    <section class="video-section" id="about">
       <h2>Discover GetCart</h2>
-      <div class="video-container">
+      <div class="video-card">
         <iframe width="100%" height="400" 
           src="https://www.youtube.com/embed/dQw4w9WgXcQ" 
           title="Affiliate Introduction Video" 
@@ -43,17 +73,21 @@
     </section>
 
     <!-- Products Grid -->
-    <section class="product-section">
+    <section class="product-section" id="products">
       <h2>Available Products</h2>
       <div id="productList" class="grid"></div>
     </section>
   </div>
 
-  <script src="app.js"></script>
-<script>
-  // Load public version
-  loadPublicProducts();
-</script>
+  <!-- Footer -->
+  <footer class="footer">
+    <p>© 2025 GetCart.my | Affiliate Deals Made Easy</p>
+  </footer>
 
+  <script src="app.js"></script>
+  <script>
+    // Load public version
+    loadPublicProducts();
+  </script>
 </body>
 </html>
