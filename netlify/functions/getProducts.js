@@ -1,11 +1,29 @@
-import { createClient } from "@netlify/blobs";
+import { Octokit } from "@octokit/rest";
 
 export async function handler() {
-  const client = createClient({ token: process.env.NETLIFY_BLOBS_TOKEN });
-  const store = client.store("products");
+  try {
+    const REPO = "GetcartFinale";        // <-- change this
+    const OWNER = "Mfarhan89"; // <-- change this
+    const FILE_PATH = "products.json";
 
-  const list = await store.list();
-  const products = await Promise.all(list.blobs.map(b => store.getJSON(b.key)));
+    const octokit = new Octokit({
+      auth: process.env.GITHUB_TOKEN,
+    });
 
-  return { statusCode: 200, body: JSON.stringify(products) };
+    const { data: fileData } = await octokit.repos.getContent({
+      owner: OWNER,
+      repo: REPO,
+      path: FILE_PATH,
+    });
+
+    const content = Buffer.from(fileData.content, "base64").toString("utf-8");
+    const products = JSON.parse(content);
+
+    return {
+      statusCode: 200,
+      body: JSON.stringify(products),
+    };
+  } catch (err) {
+    return { statusCode: 500, body: `Error: ${err.message}` };
+  }
 }
