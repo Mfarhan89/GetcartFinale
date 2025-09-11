@@ -1,4 +1,5 @@
 let editIndex = null;
+let allProducts = []; // store all products for filtering
 
 // Add Product
 async function uploadProduct() {
@@ -103,24 +104,53 @@ async function loadProducts() {
   try {
     const res = await fetch("/.netlify/functions/getProducts");
     const products = await res.json();
-
-    productList.innerHTML = "";
-    products.forEach((p, i) => {
-      const card = document.createElement("div");
-      card.className = "product-card";
-      card.innerHTML = `
-        <img src="${p.img}" alt="${p.name}">
-        <h3>${p.name}</h3>
-        <p>${p.desc}</p>
-        <a href="${p.link}" target="_blank">Buy Now</a>
-        <span class="category">${p.category}</span>
-        <br>
-        <button class="btn" onclick='openEdit(${i}, ${JSON.stringify(p).replace(/"/g, "&quot;")})'>Edit</button>
-        <button class="btn" onclick="deleteProduct(${i})">Delete</button>
-      `;
-      productList.appendChild(card);
-    });
+    allProducts = products; // save for filters
+    applyFilters(); // show filtered list (initially all)
   } catch (err) {
     productList.innerHTML = "❌ Failed to load products.";
   }
+}
+
+// Apply Search + Filter
+function applyFilters() {
+  const searchText = document.getElementById("searchBox")?.value.toLowerCase() || "";
+  const category = document.getElementById("filterCategory")?.value || "all";
+
+  let filtered = allProducts.filter(p =>
+    p.name.toLowerCase().includes(searchText) ||
+    p.desc.toLowerCase().includes(searchText)
+  );
+
+  if (category !== "all") {
+    filtered = filtered.filter(p => p.category === category);
+  }
+
+  renderProducts(filtered);
+}
+
+// Render Products
+function renderProducts(products) {
+  const productList = document.getElementById("productList");
+  productList.innerHTML = "";
+
+  if (!products.length) {
+    productList.innerHTML = "<p>No products found.</p>";
+    return;
+  }
+
+  products.forEach((p, i) => {
+    const card = document.createElement("div");
+    card.className = "product-card";
+    card.innerHTML = `
+      <img src="${p.img}" alt="${p.name}">
+      <h3>${p.name}</h3>
+      <p>${p.desc}</p>
+      <a href="${p.link}" target="_blank">Buy Now</a>
+      <span class="category">${p.category}</span>
+      <br>
+      <button class="btn" onclick='openEdit(${i}, ${JSON.stringify(p).replace(/"/g, "&quot;")})'>Edit</button>
+      <button class="btn danger" onclick="deleteProduct(${i})">Delete</button>
+    `;
+    productList.appendChild(card);
+  });
 }
