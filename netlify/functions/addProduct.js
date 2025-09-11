@@ -1,16 +1,46 @@
-import { createClient } from "@netlify/blobs";
+import { Octokit } from "@octokit/rest";
 
 export async function handler(event) {
   if (event.httpMethod !== "POST") {
     return { statusCode: 405, body: "Method Not Allowed" };
   }
 
-  const data = JSON.parse(event.body);
-  const client = createClient({ token: process.env.NETLIFY_BLOBS_TOKEN });
-  const store = client.store("products");
+  try {
+    const product = JSON.parse(event.body);
 
-  const id = Date.now().toString();
-  await store.setJSON(id, { id, ...data });
+    const REPO = "GetcartFinale";       // <-- change this
+    const OWNER = "Mfarhan89"; // <-- change this
+    const FILE_PATH = "products.json";
 
-  return { statusCode: 200, body: JSON.stringify({ message: "Product added!", id }) };
+    const octokit = new Octokit({
+      auth: process.env.GITHUB_TOKEN,
+    });
+
+    const { data: fileData } = await octokit.repos.getContent({
+      owner: OWNER,
+      repo: REPO,
+      path: FILE_PATH,
+    });
+
+    const content = Buffer.from(fileData.content, "base64").toString("utf-8");
+    let products = JSON.parse(content);
+
+    products.push(product);
+
+    await octokit.repos.createOrUpdateFileContents({
+      owner: OWNER,
+      repo: REPO,
+      path: FILE_PATH,
+      message: "Add product",
+      content: Buffer.from(JSON.stringify(products, null, 2)).toString("base64"),
+      sha: fileData.sha,
+    });
+
+    return {
+      statusCode: 200,
+      body: JSON.stringify({ success: true, product }),
+    };
+  } catch (err) {
+    return { statusCode: 500, body: `Error: ${err.message}` };
+  }
 }
