@@ -6,3 +6,8 @@
   from = "/*"
   to = "/public.html"
   status = 200
+
+  [functions]
+  node_bundler = "esbuild"
+  external_node_modules = ["@octokit/rest"]
+
