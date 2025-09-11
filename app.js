@@ -1,5 +1,9 @@
 let editIndex = null;
-let allProducts = []; // store all products for filtering
+let publicProducts = [];
+
+/* -------------------------
+   Admin Functions (Dashboard)
+-------------------------- */
 
 // Add Product
 async function uploadProduct() {
@@ -14,7 +18,7 @@ async function uploadProduct() {
     return;
   }
 
-  const product = { name, desc, link, img, category };
+  const product = { name, desc, link, img, category, timestamp: Date.now() };
 
   try {
     const res = await fetch("/.netlify/functions/addProduct", {
@@ -52,7 +56,7 @@ async function deleteProduct(index) {
   }
 }
 
-// --- Edit Functions ---
+// Edit Modal
 function openEdit(index, product) {
   editIndex = index;
   document.getElementById("editName").value = product.name;
@@ -77,6 +81,7 @@ async function saveEdit() {
     link: document.getElementById("editLink").value.trim(),
     img: document.getElementById("editImg").value.trim(),
     category: document.getElementById("editCategory").value,
+    timestamp: Date.now(),
   };
 
   try {
@@ -96,7 +101,7 @@ async function saveEdit() {
   }
 }
 
-// Load Products
+// Load Products for Dashboard
 async function loadProducts() {
   const productList = document.getElementById("productList");
   productList.innerHTML = "Loading...";
@@ -104,19 +109,75 @@ async function loadProducts() {
   try {
     const res = await fetch("/.netlify/functions/getProducts");
     const products = await res.json();
-    allProducts = products; // save for filters
-    applyFilters(); // show filtered list (initially all)
+
+    productList.innerHTML = "";
+    products.forEach((p, i) => {
+      const card = document.createElement("div");
+      card.className = "product-card";
+      card.innerHTML = `
+        <img src="${p.img}" alt="${p.name}">
+        <h3>${p.name}</h3>
+        <p>${p.desc}</p>
+        <a href="${p.link}" target="_blank">Buy Now</a>
+        <span class="category">${p.category}</span>
+        <br>
+        <button class="btn" onclick='openEdit(${i}, ${JSON.stringify(p).replace(/"/g, "&quot;")})'>Edit</button>
+        <button class="btn" onclick="deleteProduct(${i})">Delete</button>
+      `;
+      productList.appendChild(card);
+    });
   } catch (err) {
     productList.innerHTML = "❌ Failed to load products.";
   }
 }
 
-// Apply Search + Filter
-function applyFilters() {
-  const searchText = document.getElementById("searchBox")?.value.toLowerCase() || "";
-  const category = document.getElementById("filterCategory")?.value || "all";
+/* -------------------------
+   Public Functions (Website)
+-------------------------- */
+async function loadPublicProducts() {
+  const productList = document.getElementById("productList");
+  productList.innerHTML = "Loading...";
 
-  let filtered = allProducts.filter(p =>
+  try {
+    const res = await fetch("/.netlify/functions/getProducts");
+    const products = await res.json();
+
+    publicProducts = products;
+    applyPublicFilters();
+  } catch (err) {
+    productList.innerHTML = "❌ Failed to load products.";
+  }
+}
+
+function renderPublicProducts(products) {
+  const productList = document.getElementById("productList");
+  productList.innerHTML = "";
+
+  if (!products.length) {
+    productList.innerHTML = "<p>No products available.</p>";
+    return;
+  }
+
+  products.forEach(p => {
+    const card = document.createElement("div");
+    card.className = "product-card";
+    card.innerHTML = `
+      <img src="${p.img}" alt="${p.name}">
+      <h3>${p.name}</h3>
+      <p>${p.desc}</p>
+      <a href="${p.link}" target="_blank" class="btn primary">Buy Now</a>
+      <span class="category">${p.category}</span>
+    `;
+    productList.appendChild(card);
+  });
+}
+
+function applyPublicFilters() {
+  const searchText = document.getElementById("searchBox")?.value.toLowerCase() || "";
+  const category = document.getElementById("categoryFilter")?.value || "all";
+  const sortBy = document.getElementById("sortBy")?.value || "newest";
+
+  let filtered = publicProducts.filter(p =>
     p.name.toLowerCase().includes(searchText) ||
     p.desc.toLowerCase().includes(searchText)
   );
@@ -125,32 +186,13 @@ function applyFilters() {
     filtered = filtered.filter(p => p.category === category);
   }
 
-  renderProducts(filtered);
-}
-
-// Render Products
-function renderProducts(products) {
-  const productList = document.getElementById("productList");
-  productList.innerHTML = "";
-
-  if (!products.length) {
-    productList.innerHTML = "<p>No products found.</p>";
-    return;
+  if (sortBy === "name") {
+    filtered.sort((a, b) => a.name.localeCompare(b.name));
+  } else if (sortBy === "category") {
+    filtered.sort((a, b) => a.category.localeCompare(b.category));
+  } else if (sortBy === "newest") {
+    filtered = filtered.slice().reverse();
   }
 
-  products.forEach((p, i) => {
-    const card = document.createElement("div");
-    card.className = "product-card";
-    card.innerHTML = `
-      <img src="${p.img}" alt="${p.name}">
-      <h3>${p.name}</h3>
-      <p>${p.desc}</p>
-      <a href="${p.link}" target="_blank">Buy Now</a>
-      <span class="category">${p.category}</span>
-      <br>
-      <button class="btn" onclick='openEdit(${i}, ${JSON.stringify(p).replace(/"/g, "&quot;")})'>Edit</button>
-      <button class="btn danger" onclick="deleteProduct(${i})">Delete</button>
-    `;
-    productList.appendChild(card);
-  });
+  renderPublicProducts(filtered);
 }
