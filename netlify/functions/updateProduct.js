@@ -8,8 +8,8 @@ export async function handler(event) {
   try {
     const { index, product } = JSON.parse(event.body);
 
-    const REPO = "your-repo-name";        // <-- change this
-    const OWNER = "your-github-username"; // <-- change this
+    const REPO = "GetcartFinale";        // <-- change this
+    const OWNER = "Mfarhan89"; // <-- change this
     const FILE_PATH = "products.json";
 
     const octokit = new Octokit({
