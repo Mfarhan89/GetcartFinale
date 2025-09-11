@@ -43,7 +43,27 @@
     </section>
   </div>
 
+  <!-- Edit Product Modal -->
+  <div id="editModal" class="modal">
+    <div class="modal-content">
+      <h2>Edit Product</h2>
+      <input type="text" id="editName" placeholder="Product Name">
+      <input type="text" id="editDesc" placeholder="Description">
+      <input type="text" id="editLink" placeholder="Affiliate Link">
+      <input type="text" id="editImg" placeholder="Image URL">
+      <select id="editCategory">
+        <option value="technology">Technology</option>
+        <option value="health">Health</option>
+        <option value="sport">Sport</option>
+        <option value="accessories">Accessories</option>
+        <option value="cloth">Cloth</option>
+      </select>
+      <button class="btn primary" onclick="saveEdit()">Save Changes</button>
+      <button class="btn" onclick="closeEdit()">Cancel</button>
+    </div>
+  </div>
+
   <script src="app.js"></script>
-  <script>loadProducts();</script>
+  <script>loadProducts(true);</script>
 </body>
 </html>
