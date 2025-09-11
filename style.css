@@ -216,3 +216,26 @@ body.login-page {
   from { opacity: 0; transform: translateY(20px); }
   to { opacity: 1; transform: translateY(0); }
 }
+/* Controls: Search + Filter */
+.controls {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  margin: 20px 0;
+}
+
+.controls input,
+.controls select {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 14px;
+}
+
+.controls input {
+  flex: 2;
+}
+
+.controls select {
+  flex: 1;
+}
