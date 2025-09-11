@@ -1,77 +1,55 @@
-// Load Public Products
-async function loadPublicProducts() {
-  const res = await fetch("/.netlify/functions/getProducts");
-  const products = await res.json();
-  renderProducts(products, false);
-}
-
-// Load Dashboard Products
-async function loadProducts(isDashboard = false) {
-  const res = await fetch("/.netlify/functions/getProducts");
-  const products = await res.json();
-  renderProducts(products, isDashboard);
-}
-
-// Upload Product
 async function uploadProduct() {
-  const pname = document.getElementById("pname").value.trim();
-  const pdesc = document.getElementById("pdesc").value.trim();
-  const plink = document.getElementById("plink").value.trim();
-  const pimg = document.getElementById("pimg").value.trim();
-  const pcategory = document.getElementById("pcategory").value;
+  const name = document.getElementById("pname").value.trim();
+  const desc = document.getElementById("pdesc").value.trim();
+  const link = document.getElementById("plink").value.trim();
+  const img = document.getElementById("pimg").value.trim();
+  const category = document.getElementById("pcategory").value;
 
-  if (!pname || !plink || !pimg) {
-    alert("Please fill in all fields!");
+  if (!name || !desc || !link || !img) {
+    alert("Please fill in all fields.");
     return;
   }
 
-  const product = { pname, pdesc, plink, pimg, pcategory };
+  const product = { name, desc, link, img, category };
 
-  const res = await fetch("/.netlify/functions/addProduct", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(product),
-  });
+  try {
+    const res = await fetch("/.netlify/functions/addProduct", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(product),
+    });
 
-  if (res.ok) {
-    alert("✅ Product added!");
-    loadProducts(true);
-  } else {
-    alert("❌ Failed to add product.");
+    if (!res.ok) throw new Error(await res.text());
+
+    alert("✅ Product added successfully!");
+    loadProducts();
+  } catch (err) {
+    alert("❌ Failed to add product.\n" + err.message);
   }
 }
 
-// Delete Product
-async function deleteProduct(id) {
-  if (!confirm("Are you sure?")) return;
+async function loadProducts() {
+  const productList = document.getElementById("productList");
+  productList.innerHTML = "Loading...";
 
-  const res = await fetch(`/.netlify/functions/deleteProduct?id=${id}`, {
-    method: "DELETE",
-  });
+  try {
+    const res = await fetch("/.netlify/functions/getProducts");
+    const products = await res.json();
 
-  if (res.ok) {
-    alert("🗑️ Product deleted!");
-    loadProducts(true);
-  } else {
-    alert("❌ Failed to delete product.");
+    productList.innerHTML = "";
+    products.forEach((p) => {
+      const card = document.createElement("div");
+      card.className = "product-card";
+      card.innerHTML = `
+        <img src="${p.img}" alt="${p.name}">
+        <h3>${p.name}</h3>
+        <p>${p.desc}</p>
+        <a href="${p.link}" target="_blank">Buy Now</a>
+        <span class="category">${p.category}</span>
+      `;
+      productList.appendChild(card);
+    });
+  } catch (err) {
+    productList.innerHTML = "❌ Failed to load products.";
   }
-}
-
-// Render Products
-function renderProducts(products, isDashboard) {
-  const container = document.getElementById("productList");
-  container.innerHTML = "";
-
-  products.forEach((p) => {
-    const div = document.createElement("div");
-    div.className = "product";
-    div.innerHTML = `
-      <img src="${p.pimg}" alt="${p.pname}">
-      <h4>${p.pname}</h4>
-      <p>${p.pdesc || ""}</p>
-      <a class="btn" href="${p.plink}" target="_blank">View</a>
-      ${isDashboard ? `<button class="btn danger" onclick="deleteProduct('${p.id}')">Delete</button>` : ""}
-    `;
-    container.appendChild(div);
-  });
 }
